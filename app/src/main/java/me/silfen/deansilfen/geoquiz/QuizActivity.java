@@ -17,6 +17,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button mFalseButton;
     private Button mNextButton;
     private Button mPreviousButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
@@ -61,11 +62,12 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
 
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
+
         mTrueButton = (Button)findViewById(R.id.true_button);
         mFalseButton = (Button)findViewById(R.id.false_button);
-
         mPreviousButton = (Button)findViewById(R.id.previous_button);
         mNextButton = (Button)findViewById(R.id.next_button);
+        mCheatButton = (Button)findViewById(R.id.cheat_button);
 
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,13 @@ public class QuizActivity extends AppCompatActivity {
                 Log.d(TAG, "next question");
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+            }
+        });
+
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do nothing for now
             }
         });
 
