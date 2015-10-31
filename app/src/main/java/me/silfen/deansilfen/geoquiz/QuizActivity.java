@@ -10,9 +10,13 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
 
+    private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
+    private TrueFalse mCurrentQuestion;
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mPreviousButton;
     private TextView mQuestionTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
@@ -26,7 +30,15 @@ public class QuizActivity extends AppCompatActivity {
     private int mCurrentIndex = 0;
 
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getQuestion();
+        Log.d(TAG, "mCurrentQuestion index: " + mCurrentIndex);
+
+        try {
+            mCurrentQuestion = mQuestionBank[mCurrentIndex];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            Log.e(TAG, "index was out of bounds", ex);
+        }
+
+        int question = mCurrentQuestion.getQuestion();
         mQuestionTextView.setText(question);
     }
 
@@ -51,12 +63,14 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
         mTrueButton = (Button)findViewById(R.id.true_button);
         mFalseButton = (Button)findViewById(R.id.false_button);
+
+        mPreviousButton = (Button)findViewById(R.id.previous_button);
         mNextButton = (Button)findViewById(R.id.next_button);
 
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("LOGPRESS", "True");
+                Log.d(TAG, "True");
                 checkAnswer(true);
             }
         });
@@ -65,7 +79,7 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("LOGPRESS", "False");
+                Log.d(TAG, "False");
                 checkAnswer(false);
             }
         });
@@ -73,11 +87,68 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "next question");
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
         });
 
+        if (mPreviousButton != null) {
+            mPreviousButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "previous question");
+                    if (mCurrentIndex == 0) {
+                        mCurrentIndex = (mQuestionBank.length - 1);
+                    } else {
+                        mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                    }
+                    updateQuestion();
+                }
+            });
+        }
+
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
         updateQuestion();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
     }
 }
